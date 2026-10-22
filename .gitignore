@@ -1,0 +1,8 @@
+/build*/
+/dist/
+*.user
+.vs/
+.DS_Store
+config.json
+*.dpapi
+*.log

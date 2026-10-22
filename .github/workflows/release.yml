@@ -1,0 +1,55 @@
+name: Windows portable release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (major.minor.patch, e.g. 0.0.1); must not already exist'
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: missioncontrol-release
+  cancel-in-progress: false
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate version and reject existing tag
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:VERSION -cnotmatch '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$') { throw 'Invalid version: use major.minor.patch without leading zeroes' }
+          if (($env:VERSION.Split('.') | Where-Object { [long]$_ -gt 65535 }).Count) { throw 'Version components must fit Windows 16-bit version fields' }
+          $refs = gh api "repos/$env:GITHUB_REPOSITORY/git/matching-refs/tags/v$env:VERSION"
+          if ($LASTEXITCODE -ne 0) { throw 'Could not check tag collisions' }
+          if (($refs | ConvertFrom-Json | Where-Object { $_.ref -eq "refs/tags/v$env:VERSION" }).Count) { throw 'Release tag already exists' }
+      - name: Configure x64 static runtime
+        run: cmake -S . -B build -A x64 -DMC_VERSION=$env:VERSION
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Offline security tests and executable smoke
+        run: ctest --test-dir build -C Release --verbose --output-on-failure
+      - name: Verify executable and runtime imports
+        run: ./scripts/verify-binary.ps1 -Executable build/Release/MissionControl.exe
+      - name: Package portable ZIP and SHA-256
+        run: ./scripts/package.ps1 -Version $env:VERSION
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: MissionControl-${{ inputs.version }}-windows-x64
+          path: dist/*
+          if-no-files-found: error
+      - name: Publish downloadable release
+        shell: pwsh
+        run: |
+          gh release create "v$env:VERSION" "dist/MissionControl-$env:VERSION-windows-x64.zip" dist/SHA256SUMS.txt dist/runtime-imports.txt --target $env:GITHUB_SHA --title "MissionControl $env:VERSION" --notes-file docs/RELEASE_NOTES.md
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed' }
