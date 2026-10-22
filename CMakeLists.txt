@@ -11,7 +11,7 @@ endif()
 set(JSON_INCLUDE "${CMAKE_BINARY_DIR}/_deps/include")
 file(MAKE_DIRECTORY "${JSON_INCLUDE}/nlohmann")
 if(NOT EXISTS "${JSON_INCLUDE}/nlohmann/json.hpp")
- file(DOWNLOAD "https://raw.githubusercontent.com/nlohmann/json/65ee68451d8eb2b5f3a30b410476ab83deb3289b/single_include/nlohmann/json.hpp"
+ file(DOWNLOAD "https://raw.githubusercontent.com/nlohmann/json/55f93686c01528224f448c19128836e7df245f72/single_include/nlohmann/json.hpp"
   "${JSON_INCLUDE}/nlohmann/json.hpp" EXPECTED_HASH SHA256=aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63 TLS_VERIFY ON)
 endif()
 file(SHA256 "${JSON_INCLUDE}/nlohmann/json.hpp" JSON_HASH)

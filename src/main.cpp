@@ -23,7 +23,7 @@ int scrollY = 0;
 void scrollTo(int pos) {
     RECT r{};
     GetClientRect(mainWindow, &r);
-    int maxScroll = std::max(0, MulDiv(902, dpi, 96) - r.bottom);
+    int maxScroll = std::max(0, MulDiv(902, dpi, 96) - static_cast<int>(r.bottom));
     pos = std::clamp(pos, 0, maxScroll);
     ScrollWindowEx(mainWindow, 0, scrollY - pos, nullptr, nullptr, nullptr, nullptr,
                    SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
@@ -450,7 +450,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR commandLine, int show) 
     RECT work{};
     SystemParametersInfoW(SPI_GETWORKAREA, 0, &work, 0);
     RECT area{0, 0, MulDiv(885, dpi, 96),
-              std::min(MulDiv(902, dpi, 96), work.bottom - work.top - MulDiv(90, dpi, 96))};
+              std::min(MulDiv(902, dpi, 96), static_cast<int>(work.bottom - work.top) - MulDiv(90, dpi, 96))};
     AdjustWindowRectExForDpi(&area, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VSCROLL,
                              FALSE, 0, dpi);
     auto h = CreateWindowExW(0, wc.lpszClassName, L"MissionControl",

@@ -2,7 +2,7 @@
 
 MissionControl uses nlohmann/json **3.12.0**, MIT licensed, by Niels Lohmann.
 The build downloads its single header from immutable commit
-`65ee68451d8eb2b5f3a30b410476ab83deb3289b` and verifies SHA-256
+`55f93686c01528224f448c19128836e7df245f72` and verifies SHA-256
 `aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63`.
 No other third-party runtime dependency is bundled.
 Source: https://github.com/nlohmann/json/tree/v3.12.0
