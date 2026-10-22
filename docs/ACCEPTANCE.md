@@ -6,7 +6,9 @@
 
 `windows_tests`: temporary root fixture read/write, overwrite/traversal/ADS/reparse/hardlink rejection, cancelled partial-file cleanup. Harmless command fixtures run **only on the disposable Windows CI runner**, checking output and error exit code, output cap, 15-second timeout and Stop cancellation. No real bot, screenshots, power/lock/startup actions, or user's PC commands. Symlink support is required for the runner's reparse tests; lack of support fails the test rather than silently skipping it.
 
-`MissionControl --self-test`: validates a rejected shell update with empty configuration, exits without GUI, network, settings reads/writes, tray or autorun. Binary inspection verifies x64 Windows GUI subsystem and only Windows system DLL imports; static MSVC runtime is required.
+`MissionControl --self-test`: validates a rejected shell update with empty configuration, exits without GUI, network, settings reads/writes, tray or autorun. `MissionControl --ui-test`: creates the actual native controls with blank fixture configuration, verifies nine unchecked permissions and required control handles, then destroys the window. Skips settings, startup registry, Telegram and tray. Runs only on the Windows runner. This is a construction smoke test, not a visual review.
+
+Binary inspection verifies x64 Windows GUI subsystem and only Windows system DLL imports; static MSVC runtime is required.
 
 ## Manual acceptance — not performed by automated CI
 
