@@ -3,6 +3,7 @@
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <objbase.h>
 #include <windows.h>
 namespace mc {
 std::wstring wide(const std::string &s);

@@ -62,7 +62,7 @@ void showLog(const std::string &s) {
     auto line = std::wstring(time) + wide(s) + L"\r\n";
     if (GetWindowTextLengthW(activityEdit) > 60000)
         SetWindowTextW(activityEdit, L"");
-    SendMessageW(activityEdit, EM_SETSEL, -1, -1);
+    SendMessageW(activityEdit, EM_SETSEL, static_cast<WPARAM>(-1), -1);
     SendMessageW(activityEdit, EM_REPLACESEL, FALSE, reinterpret_cast<LPARAM>(line.c_str()));
     setText(statusLabel, s);
     tray.uFlags = NIF_TIP;
@@ -446,13 +446,14 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR commandLine, int show) 
     wc.lpszClassName = L"MissionControl.Main";
     RegisterClassExW(&wc);
     // Scale to fit common 1080p displays; native controls remain keyboard accessible.
-    UINT dpi = GetDpiForSystem();
+    UINT systemDpi = GetDpiForSystem();
     RECT work{};
     SystemParametersInfoW(SPI_GETWORKAREA, 0, &work, 0);
-    RECT area{0, 0, MulDiv(885, dpi, 96),
-              std::min(MulDiv(902, dpi, 96), static_cast<int>(work.bottom - work.top) - MulDiv(90, dpi, 96))};
+    RECT area{0, 0, MulDiv(885, systemDpi, 96),
+              std::min(MulDiv(902, systemDpi, 96),
+                       static_cast<int>(work.bottom - work.top) - MulDiv(90, systemDpi, 96))};
     AdjustWindowRectExForDpi(&area, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VSCROLL,
-                             FALSE, 0, dpi);
+                             FALSE, 0, systemDpi);
     auto h = CreateWindowExW(0, wc.lpszClassName, L"MissionControl",
                              WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VSCROLL,
                              CW_USEDEFAULT, CW_USEDEFAULT, area.right - area.left, area.bottom - area.top,
