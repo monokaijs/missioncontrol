@@ -8,7 +8,7 @@ namespace {
 using namespace mc;
 constexpr UINT WM_LOG = WM_APP + 1, WM_TRAY = WM_APP + 2;
 constexpr int ID_SAVE = 101, ID_START = 102, ID_STOP = 103, ID_STARTUP = 104, ID_TAB = 105, ID_ACTIVITY = 106,
-              ID_SHOW = 201, ID_EXIT = 202;
+              ID_SHOW = 201, ID_EXIT = 202, ID_PERMISSION_BASE = 500;
 HWND mainWindow{}, tokenEdit{}, usersEdit{}, chatsEdit{}, rootsEdit{}, startupCheck{}, statusLabel{},
     activityEdit{}, tabControl{};
 HFONT font{}, titleFont{};
@@ -219,7 +219,7 @@ void setup(HWND h) {
     for (auto [p, label] : features) {
         int row = i / 2, col = i % 2;
         checks[p] = control(L"BUTTON", wide(label).c_str(), BS_AUTOCHECKBOX | WS_TABSTOP, 26 + col * 416,
-                            492 + row * 32, 402, 28);
+                            492 + row * 32, 402, 28, ID_PERMISSION_BASE + static_cast<int>(p));
         ++i;
     }
     control(
@@ -309,6 +309,12 @@ LRESULT CALLBACK procedure(HWND h, UINT message, WPARAM w, LPARAM l) {
             }
             break;
         case WM_COMMAND:
+            if (LOWORD(w) >= ID_PERMISSION_BASE && LOWORD(w) < ID_PERMISSION_BASE + 9 &&
+                HIWORD(w) == BN_CLICKED) {
+                stop();
+                showLog("Permissions changed. Stopped; Save & start to apply new settings.");
+                return 0;
+            }
             switch (LOWORD(w)) {
             case ID_SAVE:
                 save(false);

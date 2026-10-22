@@ -26,8 +26,10 @@ void Telegram::stop() {
             active = nullptr;
         }
     }
-    if (worker.joinable())
+    if (worker.joinable()) {
+        CancelSynchronousIo(worker.native_handle());
         worker.join();
+    }
     confirmations.clear();
     windowRefs.clear();
     outputs.clear();

@@ -17,7 +17,7 @@ Only run on an authorized interactive Windows 10/11 x64 desktop with a dedicated
 - [ ] Verify ZIP SHA-256; extract and open without installer, admin prompt or console. Check 100%, 150%, 200% DPI and short displays for reachable controls, tab/keyboard navigation and clear text.
 - [ ] Confirm all feature permissions default off. Save token and IDs; restart and verify token reload for the same Windows user. Inspect settings/logs for absent plaintext token and absent command/output/file contents.
 - [ ] Authorized private chat receives controls on Start; a disallowed user, disallowed chat, group, inline callback and upload each produce no action. No automatic stranger pairing.
-- [ ] Test each permission off/on independently; Save settings stops old polling; Save & start reconnects with new settings. Try a stale callback after Stop/restart.
+- [ ] Test each permission off/on independently; any permission checkbox click immediately stops polling; Save settings stops old polling; Save & start reconnects with new settings. Try a stale callback after Stop/restart.
 - [ ] Use a benign prepared desktop to test desktop/multi-monitor PNG and visible selected-window capture; minimize a target and check refusal. Confirm overlap behavior is accurately described.
 - [ ] List windows, close a disposable unsaved document gracefully, confirm local save prompt; stale/closed window references must fail. Do not force-kill.
 - [ ] Test default-device volume/mute, status and lock. Power controls: cancel, wait 30 seconds, cross-user/chat reuse, double-click reuse; only confirm actual shutdown/restart with exact approval and saved work.
